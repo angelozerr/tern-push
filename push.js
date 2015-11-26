@@ -9,18 +9,18 @@
   
   function createWebSocketServer(server) {
     var WebSocketServer = require('ws').Server;
-    server.wss = new WebSocketServer({ server: server.parent });
+    return new WebSocketServer({ server: server.parent.httpServer });
   }
   
-  tern.Server.prototype.sendToClient = function(data) {
+  tern.Server.prototype.sendToClient = function(type, data) {
     var wss = this.wss;
-    if (wss) wss.clients.forEach(function each(client) { client.send(JSON.stringify(data)); }); // node context
-    else this.signal('sendToClient', data); // browser context
+    if (wss) wss.clients.forEach(function each(client) { client.send(JSON.stringify({"type": type, "data": data})); }); // node context
+    else this.signal(type, data); // browser context
   };
   
   tern.registerPlugin("push", function(server, options) {
-    if (server.parent) {
-      createWebSocketServer(server);
+    if (server.parent && server.parent.httpServer) {
+      server.wss = createWebSocketServer(server);
     }  
   });
     
