@@ -10,7 +10,7 @@
     "url": "git://github.com/angelozerr/tern-push.git"
   },
   "scripts": {
-    "test": "node ./test/all.js"
+    "publish": "node ./scripts/git-tag.js"
   },    
   "dependencies": {
     "tern": "^0.16.0",
